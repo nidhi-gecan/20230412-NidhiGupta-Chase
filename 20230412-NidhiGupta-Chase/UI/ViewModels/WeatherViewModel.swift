@@ -31,16 +31,27 @@ class WeatherViewModel : NSObject {
         self.cityName = cityName
     }
     
+    func initLocationCode() {
+        LocationManager.shared.delegate = self
+        LocationManager.shared.requestLocation()
+    }
+    
     func callToFetchWeatherData(){
+        guard !self.cityName.isEmpty else { return }
         let isConnected = NetworkPathMonitor.shared.isReachable
         if !isConnected {
             self.weatherInfoDelegate?.weatherInfoError(errorMessage: "Internet connection is not reachable")
             return
         }
         
+        guard let url = Endpoints.weatherByCity(city: cityName).url else {
+            self.weatherInfoDelegate?.weatherInfoError(errorMessage: "Bad url")
+            return
+        }
+        
         Task {
             do {
-                let result = try await apiService.fetchWeatherInfo(url: Endpoints.weatherByCity(city: cityName).url, type: WeatherInfo.self)
+                let result = try await apiService.fetchWeatherInfo(url: url, type: WeatherInfo.self)
                 switch result {
                 case .success(let weatherInfo):
                     self.weatherInfo = weatherInfo
@@ -55,5 +66,37 @@ class WeatherViewModel : NSObject {
             }
         }
     }
+
+    func fetchCityFromLocation(lat: Double, lon: Double) {
+        
+        guard let url = Endpoints.fetchCityFromLocation(lat:lat, lon: lon).url else {
+            self.weatherInfoDelegate?.weatherInfoError(errorMessage: "Bad url")
+            return
+        }
+        
+        Task {
+            do {
+                let result = try await apiService.fetchWeatherInfo(url: url, type: [CityLocation].self)
+                switch result {
+                case .success(let cityLocation):
+                    self.cityName = cityLocation.first?.name ?? ""
+                    self.callToFetchWeatherData()
+                case .failure(_):
+                    self.weatherInfoDelegate?.weatherInfoError(errorMessage: "Bad url")
+                }
+            }catch {
+                let error = error as? NetworkError
+                let message = ((error?.description) != nil) ? error?.description : error?.localizedDescription
+                self.weatherInfoDelegate?.weatherInfoError(errorMessage: message ?? "")
+            }
+        }
+    }
 }
 
+extension WeatherViewModel: LocationManagerDelegate {
+    
+    func didUpdateLocation(latitude: Double, longitude: Double) {
+        fetchCityFromLocation(lat: latitude, lon: longitude)
+    }
+    
+}

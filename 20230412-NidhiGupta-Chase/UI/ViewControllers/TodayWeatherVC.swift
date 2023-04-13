@@ -214,15 +214,14 @@ extension TodayWeatherVC {
         
         let city = Utility.lastSearchedCity
         print("City = \(city)")
-        searchBar.text = city
         
         //Current search or last search or first search
         updateWeatherUI(cityName: city)
     }
         
     func updateWeatherUI(cityName: String){
-        
         self.weatherViewModel = WeatherViewModel(apiService: APIService(), cityName: cityName)
+        self.weatherViewModel.initLocationCode()
         self.weatherViewModel.weatherInfoDelegate = self
         self.weatherViewModel.callToFetchWeatherData()
         
@@ -273,7 +272,7 @@ extension TodayWeatherVC {
     
     func updateWeatherIconImage(){
         let url = Endpoints.urlForIconImage(icon: iconName!).url
-        ImageCache.shared.downloadImage(url: url, icon: iconName!) { [weak self] weatherImage in
+        ImageCache.shared.downloadImage(url: url!, icon: iconName!) { [weak self] weatherImage in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.imageView.image = weatherImage

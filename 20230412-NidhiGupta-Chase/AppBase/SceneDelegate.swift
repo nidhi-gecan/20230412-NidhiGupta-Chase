@@ -20,7 +20,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         let initialViewController = TodayWeatherVC()
-//        let initialViewController = ViewController()
         window?.rootViewController = initialViewController
         window?.makeKeyAndVisible()
     }

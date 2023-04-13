@@ -16,16 +16,15 @@ class TodayWeatherVC: UIViewController {
         searchbar.placeholder = "search"
         let width = UIScreen.main.bounds.width
         searchbar.frame = CGRect(x: 0, y: 0, width: width, height: 40)
-//        searchbar.showsCancelButton = true
         return searchbar
     }()
     
     private var cityLabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 16.0)
-//        label.text = ""
         return label
     }()
+    
     //Need to add formatter later
     private var timeLabel = {
         let label = UILabel()
@@ -38,7 +37,7 @@ class TodayWeatherVC: UIViewController {
         let imageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 80.0, height: 80.0)))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-//        imageView.image = UIImage(named: "cloud")
+        imageView.image = UIImage(named: "cloud")
         imageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
         return imageView
@@ -70,7 +69,6 @@ class TodayWeatherVC: UIViewController {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18.0, weight: .bold)
         label.textAlignment = .center
-//        label.text = "90%"
         return label
     }()
     
@@ -102,7 +100,6 @@ class TodayWeatherVC: UIViewController {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18.0, weight: .bold)
         label.textAlignment = .center
-//        label.text = "10 m/s"
         return label
     }()
     
@@ -126,7 +123,6 @@ class TodayWeatherVC: UIViewController {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18.0, weight: .bold)
         label.textAlignment = .center
-//        label.text = "1011"
         return label
     }()
     
@@ -208,9 +204,6 @@ class TodayWeatherVC: UIViewController {
         }
     }
     
-//    let locationManager = LocationManager()
-    let locationManager = CLLocationManager()
-
 }
 
 extension TodayWeatherVC {
@@ -218,44 +211,15 @@ extension TodayWeatherVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.searchBar.delegate = self
-        locationManager.delegate = self
-        
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
-        handleAutoWeather()
-
         
         let city = Utility.lastSearchedCity
         print("City = \(city)")
         searchBar.text = city
-        //Current location or last search or first search
+        
+        //Current search or last search or first search
         updateWeatherUI(cityName: city)
     }
-    
-    /// Handle default weather showing conditions
-        private func handleAutoWeather() {
-            
-            switch locationManager.authorizationStatus {
-                
-            case .notDetermined, .restricted, .denied:
-                if (UserDefaults.standard.double(forKey: "lat") != 0) {
-                    let lat = UserDefaults.standard.double(forKey: "lat")
-                    let long = UserDefaults.standard.double(forKey: "lon")
-                    print("======latlong=======")
-                    print(lat, long)
-                    print("======latlong=======")
-//                    let location = GeoLocationModel(name: nil, country: nil, state: nil, lat: lat, lon: long)
-//                    coordinator?.showWeatherDetails(for: location)
-                }
-                
-            case .authorizedAlways, .authorizedWhenInUse:
-                locationManager.startUpdatingLocation()
-                
-            @unknown default:
-                break
-            }
-        }
-    
+        
     func updateWeatherUI(cityName: String){
         
         self.weatherViewModel = WeatherViewModel(apiService: APIService(), cityName: cityName)
@@ -317,53 +281,21 @@ extension TodayWeatherVC {
         }
     }
 }
-    
-    extension TodayWeatherVC: UISearchBarDelegate {
-        
-        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
-            print("textDidChange")
-            print(searchBar.text!)
-        }
 
-        func searchBarSearchButtonClicked(_ searchBar: UISearchBar) // called when keyboard search button pressed
-        {
-            Utility.lastSearchedCity = searchBar.text!
-            updateWeatherUI(cityName: searchBar.text!)
-            print("searchBarSearchButtonClicked")
-            searchBar.resignFirstResponder()
-            
-        }
+extension TodayWeatherVC: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
+        print(searchBar.text!)
     }
 
-// MARK: - ocationManagerDelegate
-extension TodayWeatherVC: CLLocationManagerDelegate {
-    
-    func locationManager(_ manager: CLLocationManager,
-                         didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last {
-            let lat = location.coordinate.latitude
-            let long = location.coordinate.longitude
-            
-            print("======latlong=======")
-            print(location)
-            print("======latlong=======")
-
-            //            let location = GeoLocationModel(name: nil, country: nil, state: nil, lat: lat, lon: long)
-            //            coordinator?.showWeatherDetails(for: location)
-        }
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) // called when keyboard search button pressed
+    {
+        Utility.lastSearchedCity = searchBar.text!
+        updateWeatherUI(cityName: searchBar.text!)
+        searchBar.resignFirstResponder()
+        
     }
 }
-
-//extension TodayWeatherVC:LocationManagerDelegate {
-//
-//    func locationManager(_ manager: LocationManager, didUpdateLocation location: CLLocation) {
-//        print(location.coordinate)
-//    }
-//
-//    func locationManager(_ manager: LocationManager, didFailWithError error: Error) {
-//        print(error.localizedDescription)
-//    }
-//}
 
 extension TodayWeatherVC: WeatherDelegate {
     

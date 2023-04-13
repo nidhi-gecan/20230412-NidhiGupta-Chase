@@ -9,13 +9,9 @@ import Network
 
 class NetworkPathMonitor {
     static let shared = NetworkPathMonitor()
-
-//    let monitor = NWPathMonitor()
-    
     let monitor: NWPathMonitor
     
     private var status: NWPath.Status = .requiresConnection
-//    var isReachable: Bool { status == .satisfied }
     private (set) var isReachable: Bool
     var isReachableOnCellular: Bool = true
 
@@ -37,14 +33,11 @@ class NetworkPathMonitor {
 
             if path.status == .satisfied {
                 self?.isReachable = true
-                print("We're connected!")
                 // post connected notification
             } else {
                 self?.isReachable = false
-                print("No connection.")
                 // post disconnected notification
             }
-//            print(path.isExpensive)
         }
 
         let queue = DispatchQueue(label: "Monitor")

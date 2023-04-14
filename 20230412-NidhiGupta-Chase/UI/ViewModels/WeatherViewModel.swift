@@ -80,6 +80,7 @@ class WeatherViewModel : NSObject {
                 switch result {
                 case .success(let cityLocation):
                     self.cityName = cityLocation.first?.name ?? ""
+                    Utility.lastSearchedCity = self.cityName
                     self.callToFetchWeatherData()
                 case .failure(_):
                     self.weatherInfoDelegate?.weatherInfoError(errorMessage: "Bad url")

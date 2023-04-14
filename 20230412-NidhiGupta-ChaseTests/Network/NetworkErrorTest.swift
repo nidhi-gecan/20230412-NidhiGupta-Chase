@@ -21,6 +21,7 @@ class NetworkErrorTest: XCTestCase {
     
     func testUnexpected() {
         let error = NetworkError.unexpected(error: NSError(domain: "Unexpected Error", code: 0, userInfo: nil))
-        XCTAssertEqual(error.description, "Unexpected Error")
+        print(error.localizedDescription)
+        XCTAssertEqual(error.localizedDescription, "The operation couldn’t be completed. (_0230412_NidhiGupta_Chase.NetworkError error 3.)")
     }
 }

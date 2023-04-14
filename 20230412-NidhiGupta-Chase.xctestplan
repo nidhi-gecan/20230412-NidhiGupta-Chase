@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "77EBD99F-4EB3-4820-8A45-AEDFF83C9CD2",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:20230412-NidhiGupta-Chase.xcodeproj",
+      "identifier" : "717534E029E66EB100237C30",
+      "name" : "20230412-NidhiGupta-Chase"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:20230412-NidhiGupta-Chase.xcodeproj",
+        "identifier" : "717534F629E66EB300237C30",
+        "name" : "20230412-NidhiGupta-ChaseTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:20230412-NidhiGupta-Chase.xcodeproj",
+        "identifier" : "7175350029E66EB300237C30",
+        "name" : "20230412-NidhiGupta-ChaseUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

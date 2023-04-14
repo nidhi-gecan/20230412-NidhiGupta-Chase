@@ -7,13 +7,31 @@
 
 import Foundation
 
-class APIService {
-        
-    // session to be used to make the API call
-    private let session: URLSession
+// MARK: - APIServiceProtocol
+protocol APIServiceProtocol {
+    func fetchWeatherInfo<T: Decodable>(url: URL, type: T.Type) async throws -> Result<T, NetworkError>
+}
+
+// MARK: - URLSessionProtcol
+protocol URLSessionProtocol {
+    func data(from url: URL) async throws -> (Data, URLResponse)
+}
+
+// MARK: - URLSession
+class WeatherURLSession: URLSessionProtocol {
+    private let session: URLSession = .shared
+    func data(from url: URL) async throws -> (Data, URLResponse) {
+        return try await session.data(from: url)
+    }
+}
+
+// MARK: - APIService
+
+class APIService: APIServiceProtocol {
     
-    // Make the session shared by default.
-    init(urlSession: URLSession = .shared) {
+    private let session: URLSessionProtocol
+    
+    init(urlSession: URLSessionProtocol = WeatherURLSession()) {
         self.session = urlSession
     }
     
@@ -23,8 +41,8 @@ class APIService {
         
         if let response = response as? HTTPURLResponse,
             !(200...299).contains(response.statusCode),
-            let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-            let message = json["message"] as? String {
+            let json: [String : Any] = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+            let message: String = json["message"] as? String {
                 throw NetworkError.notFound(message: message)
         } else if let response = response as? HTTPURLResponse,
                   !(200...299).contains(response.statusCode) {
@@ -39,5 +57,3 @@ class APIService {
         }
     }
 }
-
-

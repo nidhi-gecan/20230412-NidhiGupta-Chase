@@ -2,7 +2,7 @@
 import XCTest
 @testable import _0230412_NidhiGupta_Chase
 
-class CityLocationTest: XCTest {
+class CityLocationTest: XCTestCase {
 
     func testCityLocation() {
         let cityLocation = CityLocation(name: "London", lat: 51.5085, lon: -0.1257, country: "UK")

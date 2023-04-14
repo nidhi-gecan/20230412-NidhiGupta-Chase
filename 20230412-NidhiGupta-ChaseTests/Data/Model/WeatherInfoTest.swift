@@ -1,8 +1,8 @@
-// Write XCTest for the WeatherInfo class
+// XCTest for the WeatherInfo class
 import XCTest
 @testable import _0230412_NidhiGupta_Chase
 
-class WeatherInfoTest: XCTest {
+class WeatherInfoTest: XCTestCase {
 
     func testWeatherInfo() {
         let weatherInfo = WeatherInfo(weather: [Weather(description: "clear sky", icon: "01d", id: 800, main: "Clear")], main: WeatherMain(temp: 20.0, feels_like: 20.0, temp_min: 20.0, temp_max: 20.0, humidity: 20, pressure: 20), name: "London", wind: Wind(speed: 20.0), sys: Country(country: "UK"))
